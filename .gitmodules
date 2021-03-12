@@ -1,0 +1,7 @@
+[submodule "account-service"]
+    path = account-service
+    url = https://github.com/FritsvanLieshout/account-service.git
+
+[submodule "tweet-service"]
+    path = tweet-service
+    url = https://github.com/FritsvanLieshout/tweet-service.git
