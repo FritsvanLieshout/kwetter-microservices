@@ -5,3 +5,7 @@
 [submodule "tweet-service"]
     path = services/tweet-service
     url = https://github.com/FritsvanLieshout/tweet-service.git
+
+[submodule "api-gateway"]
+    path = services/api-gateway
+    url = https://github.com/FritsvanLieshout/api-gateway.git
