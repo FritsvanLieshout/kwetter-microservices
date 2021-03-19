@@ -9,3 +9,7 @@
 [submodule "api-gateway"]
     path = services/api-gateway
     url = https://github.com/FritsvanLieshout/api-gateway.git
+
+[submodule "eureka-discovery-service"]
+    path = services/eureka-discovery-service
+    url = https://github.com/FritsvanLieshout/eureka-discovery-service.git
