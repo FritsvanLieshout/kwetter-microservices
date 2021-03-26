@@ -44,6 +44,18 @@ services:
     ports:
       - "27017:27017"
 
+  mongodb_timeline:
+    image: mongo:latest
+    container_name: mongodb_timeline
+    environment: 
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: Kw3tter!
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - mongodb_timeline_container:/data/db
+    ports:
+      - "27018:27017"
+
   message-broker:
     image: rabbitmq:3.8-management
     hostname: message-broker
@@ -97,6 +109,21 @@ services:
       SPRING_CLOUD_GATEWAY_ROUTES[1]_URI: http://account-service:8069
       SPRING_CLOUD_GATEWAY_ROUTES[1]_ID: account-service
       SPRING_CLOUD_GATEWAY_ROUTES[1]_PREDICATES[0]: Path=/api/account/**
+  
+  zookeeper:
+    image: confluentinc/cp-zookeeper:5.3.1
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_SYNC_LIMIT: 2
+  kafka:
+    image: confluentinc/cp-kafka:5.3.1
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_BROKER_ID: 2
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     
 volumes:
   mongodb_tweet_container:
+  mongodb_timeline_container:

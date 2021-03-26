@@ -13,3 +13,7 @@
 [submodule "eureka-discovery-service"]
     path = services/eureka-discovery-service
     url = https://github.com/FritsvanLieshout/eureka-discovery-service.git
+
+[submodule "timeline-service"]
+    path = services/timeline-service
+    url = https://github.com/FritsvanLieshout/timeline-service.git
