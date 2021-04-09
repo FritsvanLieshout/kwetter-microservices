@@ -54,14 +54,6 @@ services:
     ports:
       - "27018:27017"
 
-  message-broker:
-    image: rabbitmq:3.8-management
-    hostname: message-broker
-    restart: always
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-
   timeline-service:
     image: timeline-service:0.0.1-SNAPSHOT
     hostname: timeline-service
@@ -77,9 +69,9 @@ services:
     environment: 
       SPRING_DATA_MONGODB_HOST: mongodb_timeline
 
-  account-service:
-    image: account-service:0.0.1-SNAPSHOT
-    hostname: account-service
+  user-service:
+    image: user-service:0.0.1-SNAPSHOT
+    hostname: user-service
     restart: always
     ports:
       - "8069:8069"
@@ -115,15 +107,18 @@ services:
       - "8050:8050"
     depends_on: 
       - tweet-service
-      - account-service
+      - user-service
       - eureka-discovery-service
     environment:
       SPRING_CLOUD_GATEWAY_ROUTES[0]_URI: http://tweet-service:8070
       SPRING_CLOUD_GATEWAY_ROUTES[0]_ID: tweet-service
       SPRING_CLOUD_GATEWAY_ROUTES[0]_PREDICATES[0]: Path=/api/tweets/**
-      SPRING_CLOUD_GATEWAY_ROUTES[1]_URI: http://account-service:8069
-      SPRING_CLOUD_GATEWAY_ROUTES[1]_ID: account-service
+      SPRING_CLOUD_GATEWAY_ROUTES[1]_URI: http://user-service:8069
+      SPRING_CLOUD_GATEWAY_ROUTES[1]_ID: user-service
       SPRING_CLOUD_GATEWAY_ROUTES[1]_PREDICATES[0]: Path=/api/account/**
+      SPRING_CLOUD_GATEWAY_ROUTES[1]_URI: http://timeline-service:8068
+      SPRING_CLOUD_GATEWAY_ROUTES[1]_ID: timeline-service
+      SPRING_CLOUD_GATEWAY_ROUTES[1]_PREDICATES[0]: Path=/api/timeline/**
   
   zookeeper:
     extends:
