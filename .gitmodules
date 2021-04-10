@@ -17,3 +17,7 @@
 [submodule "timeline-service"]
     path = services/timeline-service
     url = https://github.com/FritsvanLieshout/timeline-service.git
+
+[submodule "auth-service"]
+    path = services/auth-service
+    url = https://github.com/FritsvanLieshout/auth-service.git
