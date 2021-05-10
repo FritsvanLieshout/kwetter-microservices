@@ -1,0 +1,14 @@
+auth-service: 
+    image: auth-service:0.0.1-SNAPSHOT
+    hostname: auth-service
+    restart: always
+    ports:
+      - "8067:8067"
+
+    depends_on: 
+      - mysql-db-auth
+      - eureka-discovery-service
+    environment:
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Kw3tter!
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db-auth:3306/auth_user?createDatabaseIfNotExist=true
