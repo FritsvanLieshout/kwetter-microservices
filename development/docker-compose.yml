@@ -13,8 +13,22 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: Kw3tter!
       MYSQL_DATABASE: account_db
+    volumes:
+      - mysql_db_user:/var/lib/mysql  
     ports:
       - "3306:3306"
+    restart: always
+
+  mysql_db_auth:
+    image: mysql:latest
+    container_name: mysql_db_auth
+    environment:
+      MYSQL_ROOT_PASSWORD: Kw3tter!
+      MYSQL_DATABASE: auth_user
+    volumes:
+      - mysql_db_auth:/var/lib/mysql
+    ports:
+      - "3307:3307"
     restart: always
 
   phpmyadmin:
@@ -29,6 +43,22 @@ services:
     environment:
       PMA_HOST: mysql
       MYSQL_ROOT_PASSWORD: Kw3tter!
+
+  phpmyadmin-auth:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: my-php-myadmin-auth
+    ports:
+      - "8059:80"
+    restart: always
+            
+    depends_on:
+      - mysql_db_auth
+    environment:
+      PMA_HOST: mysql_db_auth
+      PMA_PORT: 3308
+      PMA_ARBITRARY: 1
+      MYSQL_ROOT_PASSWORD: Kw3tter!
+
 
   mongodb_tweet:
     image: mongo:latest
@@ -53,6 +83,46 @@ services:
       - mongodb_timeline_container:/data/db
     ports:
       - "27018:27017"
+  
+  mongodb_follow:
+    image: mongo:latest
+    container_name: mongodb_follow
+    environment: 
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: Kw3tter!
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - mongodb_follow_container:/data/db
+    ports:
+      - "27019:27017"
+
+  follow-service: 
+    image: follow-service:0.0.1-SNAPSHOT
+    hostname: follow-service
+    restart: always
+    ports:
+      - "8066:8066"
+    
+    depends_on: 
+      - mongodb_timeline
+      - eureka-discovery-service
+    environment:
+      SPRING_DATA_MONGODB_HOST: mongodb_follow
+
+  auth-service: 
+    image: auth-service:0.0.1-SNAPSHOT
+    hostname: auth-service
+    restart: always
+    ports:
+      - "8067:8067"
+
+    depends_on: 
+      - mysql_db_auth
+      - eureka-discovery-service
+    environment:
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Kw3tter!
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql_db_auth:3306/auth_user?createDatabaseIfNotExist=true
 
   timeline-service:
     image: timeline-service:0.0.1-SNAPSHOT
@@ -99,27 +169,35 @@ services:
     environment: 
       SPRING_DATA_MONGODB_HOST: mongodb_tweet
   
-  api-gateway:
-    image: api-gateway:0.0.1-SNAPSHOT
-    hostname: api-gateway
-    restart: always
-    ports:
-      - "8050:8050"
-    depends_on: 
-      - tweet-service
-      - user-service
-      - eureka-discovery-service
-    environment:
-      SPRING_CLOUD_GATEWAY_ROUTES[0]_URI: http://tweet-service:8070
-      SPRING_CLOUD_GATEWAY_ROUTES[0]_ID: tweet-service
-      SPRING_CLOUD_GATEWAY_ROUTES[0]_PREDICATES[0]: Path=/api/tweets/{segment}
-      SPRING_CLOUD_GATEWAY_ROUTES[0]_PREDICATES[1]: Method=GET, POST, DELETE, PUT, OPTIONS
-      SPRING_CLOUD_GATEWAY_ROUTES[1]_URI: http://user-service:8069
-      SPRING_CLOUD_GATEWAY_ROUTES[1]_ID: user-service
-      SPRING_CLOUD_GATEWAY_ROUTES[1]_PREDICATES[0]: Path=/api/user/{segment}
-      SPRING_CLOUD_GATEWAY_ROUTES[1]_URI: http://timeline-service:8068
-      SPRING_CLOUD_GATEWAY_ROUTES[1]_ID: timeline-service
-      SPRING_CLOUD_GATEWAY_ROUTES[1]_PREDICATES[0]: Path=/api/timeline/{segment}
+  # api-gateway:
+  #   image: api-gateway:0.0.1-SNAPSHOT
+  #   hostname: api-gateway
+  #   restart: always
+  #   ports:
+  #     - "8050:8050"
+  #   depends_on: 
+  #     - tweet-service
+  #     - user-service
+  #     - timeline-service
+  #     - auth-service
+  #     - eureka-discovery-service
+  #   environment:
+  #     SPRING_CLOUD_GATEWAY_ROUTES[0]_URI: http://tweet-service:8070
+  #     SPRING_CLOUD_GATEWAY_ROUTES[0]_ID: tweet-service
+  #     SPRING_CLOUD_GATEWAY_ROUTES[0]_PREDICATES[0]: Path=/api/tweets/{segment}
+  #     SPRING_CLOUD_GATEWAY_ROUTES[0]_PREDICATES[1]: Method=GET, POST, DELETE, PUT, OPTIONS
+  #     SPRING_CLOUD_GATEWAY_ROUTES[1]_URI: http://user-service:8069
+  #     SPRING_CLOUD_GATEWAY_ROUTES[1]_ID: user-service
+  #     SPRING_CLOUD_GATEWAY_ROUTES[1]_PREDICATES[0]: Path=/api/user/{segment}
+  #     SPRING_CLOUD_GATEWAY_ROUTES[2]_URI: http://timeline-service:8068
+  #     SPRING_CLOUD_GATEWAY_ROUTES[2]_ID: timeline-service
+  #     SPRING_CLOUD_GATEWAY_ROUTES[2]_PREDICATES[0]: Path=/api/timeline/{segment}
+  #     SPRING_CLOUD_GATEWAY_ROUTES[3]_URI: http://auth-service:8067
+  #     SPRING_CLOUD_GATEWAY_ROUTES[3]_ID: auth-service
+  #     SPRING_CLOUD_GATEWAY_ROUTES[3]_PREDICATES[0]: Path=/api/auth/{segment}
+  #     SPRING_CLOUD_GATEWAY_ROUTES[4]_URI: http://follow-service:8066
+  #     SPRING_CLOUD_GATEWAY_ROUTES[4]_ID: follow-service
+  #     SPRING_CLOUD_GATEWAY_ROUTES[4]_PREDICATES[0]: Path=/api/follow/{segment}
   
   zookeeper:
     extends:
@@ -133,3 +211,6 @@ services:
 volumes:
   mongodb_tweet_container:
   mongodb_timeline_container:
+  mongodb_follow_container:
+  mysql_db_user:  
+  mysql_db_auth:

@@ -21,3 +21,7 @@
 [submodule "auth-service"]
     path = services/auth-service
     url = https://github.com/FritsvanLieshout/auth-service.git
+
+[submodule "follow-service"]
+    path = services/follow-service
+    url = https://github.com/FritsvanLieshout/follow-service.git
