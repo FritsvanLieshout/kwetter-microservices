@@ -25,3 +25,11 @@
 [submodule "follow-service"]
     path = services/follow-service
     url = https://github.com/FritsvanLieshout/follow-service.git
+
+[submodule "trending-service"]
+    path = services/trending-service
+    url = https://github.com/FritsvanLieshout/trending-service.git
+
+[submodule "ws-service"]
+    path = services/ws-service
+    url = https://github.com/FritsvanLieshout/ws-service.git
