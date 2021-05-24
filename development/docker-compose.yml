@@ -59,19 +59,6 @@ services:
       PMA_ARBITRARY: 1
       MYSQL_ROOT_PASSWORD: Kw3tter!
 
-
-  mongodb_tweet:
-    image: mongo:latest
-    container_name: mongodb_tweet
-    environment: 
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: Kw3tter!
-    volumes:
-      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-      - mongodb_tweet_container:/data/db
-    ports:
-      - "27017:27017"
-
   mongodb_timeline:
     image: mongo:latest
     container_name: mongodb_timeline
@@ -95,6 +82,18 @@ services:
       - mongodb_follow_container:/data/db
     ports:
       - "27019:27017"
+
+  mongodb_tweet:
+    image: mongo:latest
+    container_name: mongodb_tweet
+    environment: 
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: Kw3tter!
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - mongodb_tweet_container:/data/db
+    ports:
+      - "27020:27017"
 
   follow-service: 
     image: follow-service:0.0.1-SNAPSHOT
@@ -198,7 +197,15 @@ services:
   #     SPRING_CLOUD_GATEWAY_ROUTES[4]_URI: http://follow-service:8066
   #     SPRING_CLOUD_GATEWAY_ROUTES[4]_ID: follow-service
   #     SPRING_CLOUD_GATEWAY_ROUTES[4]_PREDICATES[0]: Path=/api/follow/{segment}
-  
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    restart: "no"
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka:29092"
+    depends_on:
+      - "kafka"
   zookeeper:
     extends:
       file: kafka.yml
