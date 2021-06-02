@@ -120,7 +120,7 @@ services:
       - "27022:27017"
 
   like-service:
-    image: like-service:0.0.1-SNAPSHOT
+    image: kwetterfrits/like-service:latest
     hostname: like-service
     restart: always
     ports:
@@ -133,7 +133,7 @@ services:
       SPRING_DATA_MONGODB_HOST: mongodb_like
 
   trending-service: 
-    image: trending-service:0.0.1-SNAPSHOT
+    image: kwetterfrits/trending-service:latest
     hostname: trending-service
     restart: always
     ports:
@@ -146,7 +146,7 @@ services:
       SPRING_DATA_MONGODB_HOST: mongodb_trending
 
   follow-service: 
-    image: follow-service:0.0.1-SNAPSHOT
+    image: kwetterfrits/follow-service:latest
     hostname: follow-service
     restart: always
     ports:
@@ -159,7 +159,7 @@ services:
       SPRING_DATA_MONGODB_HOST: mongodb_follow
 
   auth-service: 
-    image: auth-service:0.0.1-SNAPSHOT
+    image: kwetterfrits/auth-service:latest
     hostname: auth-service
     restart: always
     ports:
@@ -174,7 +174,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql_db_auth:3306/auth_user?createDatabaseIfNotExist=true
 
   timeline-service:
-    image: timeline-service:0.0.1-SNAPSHOT
+    image: kwetterfrits/timeline-service:latest
     hostname: timeline-service
     restart: always
     ports: 
@@ -189,7 +189,7 @@ services:
       SPRING_DATA_MONGODB_HOST: mongodb_timeline
 
   user-service:
-    image: user-service:0.0.1-SNAPSHOT
+    image: kwetterfrits/user-service:latest
     hostname: user-service
     restart: always
     ports:
@@ -204,7 +204,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://kwetter_account_db:3306/account_db?createDatabaseIfNotExist=true
 
   tweet-service:
-    image: tweet-service:0.0.1-SNAPSHOT 
+    image: kwetterfrits/tweet-service:latest
     hostname: tweet-service
     restart: always
     ports:
@@ -217,47 +217,48 @@ services:
 
     environment: 
       SPRING_DATA_MONGODB_HOST: mongodb_tweet
-
-  ws-service:
-    image: ws-service:0.0.1-SNAPSHOT
-    hostname: ws-service
+  
+  api-gateway:
+    image: kwetterfrits/api-gateway:latest
+    hostname: api-gateway
     restart: always
     ports:
-      - "8443:8443"
-        
+      - "8050:8050"
     depends_on: 
+      - tweet-service
+      - user-service
+      - timeline-service
+      - auth-service
       - eureka-discovery-service
-      - kafka
-  
-  # api-gateway:
-  #   image: api-gateway:0.0.1-SNAPSHOT
-  #   hostname: api-gateway
-  #   restart: always
-  #   ports:
-  #     - "8050:8050"
-  #   depends_on: 
-  #     - tweet-service
-  #     - user-service
-  #     - timeline-service
-  #     - auth-service
-  #     - eureka-discovery-service
-  #   environment:
-  #     SPRING_CLOUD_GATEWAY_ROUTES[0]_URI: http://tweet-service:8070
-  #     SPRING_CLOUD_GATEWAY_ROUTES[0]_ID: tweet-service
-  #     SPRING_CLOUD_GATEWAY_ROUTES[0]_PREDICATES[0]: Path=/api/tweets/{segment}
-  #     SPRING_CLOUD_GATEWAY_ROUTES[0]_PREDICATES[1]: Method=GET, POST, DELETE, PUT, OPTIONS
-  #     SPRING_CLOUD_GATEWAY_ROUTES[1]_URI: http://user-service:8069
-  #     SPRING_CLOUD_GATEWAY_ROUTES[1]_ID: user-service
-  #     SPRING_CLOUD_GATEWAY_ROUTES[1]_PREDICATES[0]: Path=/api/user/{segment}
-  #     SPRING_CLOUD_GATEWAY_ROUTES[2]_URI: http://timeline-service:8068
-  #     SPRING_CLOUD_GATEWAY_ROUTES[2]_ID: timeline-service
-  #     SPRING_CLOUD_GATEWAY_ROUTES[2]_PREDICATES[0]: Path=/api/timeline/{segment}
-  #     SPRING_CLOUD_GATEWAY_ROUTES[3]_URI: http://auth-service:8067
-  #     SPRING_CLOUD_GATEWAY_ROUTES[3]_ID: auth-service
-  #     SPRING_CLOUD_GATEWAY_ROUTES[3]_PREDICATES[0]: Path=/api/auth/{segment}
-  #     SPRING_CLOUD_GATEWAY_ROUTES[4]_URI: http://follow-service:8066
-  #     SPRING_CLOUD_GATEWAY_ROUTES[4]_ID: follow-service
-  #     SPRING_CLOUD_GATEWAY_ROUTES[4]_PREDICATES[0]: Path=/api/follow/{segment}
+      - like-service
+      - trending-service
+      - follow-service
+    # environment:
+    #   SPRING_CLOUD_GATEWAY_ROUTES[0]_URI: http://tweet-service:8070
+    #   SPRING_CLOUD_GATEWAY_ROUTES[0]_ID: tweet-service
+    #   SPRING_CLOUD_GATEWAY_ROUTES[0]_PREDICATES[0]: Path=/api/tweets/{segment}
+    #   SPRING_CLOUD_GATEWAY_ROUTES[0]_PREDICATES[1]: Method=GET, POST, DELETE, PUT, OPTIONS
+    #   SPRING_CLOUD_GATEWAY_ROUTES[1]_URI: http://user-service:8069
+    #   SPRING_CLOUD_GATEWAY_ROUTES[1]_ID: user-service
+    #   SPRING_CLOUD_GATEWAY_ROUTES[1]_PREDICATES[0]: Path=/api/user/{segment}
+    #   SPRING_CLOUD_GATEWAY_ROUTES[1]_PREDICATES[1]: Method=GET, POST, DELETE, PUT, OPTIONS
+    #   SPRING_CLOUD_GATEWAY_ROUTES[2]_URI: http://timeline-service:8068
+    #   SPRING_CLOUD_GATEWAY_ROUTES[2]_ID: timeline-service
+    #   SPRING_CLOUD_GATEWAY_ROUTES[2]_PREDICATES[0]: Path=/api/timeline/{segment}
+    #   SPRING_CLOUD_GATEWAY_ROUTES[2]_PREDICATES[1]: Method=GET, POST, DELETE, PUT, OPTIONS
+    #   SPRING_CLOUD_GATEWAY_ROUTES[3]_URI: http://auth-service:8067
+    #   SPRING_CLOUD_GATEWAY_ROUTES[3]_ID: auth-service
+    #   SPRING_CLOUD_GATEWAY_ROUTES[3]_PREDICATES[0]: Path=/api/auth/{segment}
+    #   SPRING_CLOUD_GATEWAY_ROUTES[4]_URI: http://follow-service:8066
+    #   SPRING_CLOUD_GATEWAY_ROUTES[4]_ID: follow-service
+    #   SPRING_CLOUD_GATEWAY_ROUTES[4]_PREDICATES[0]: Path=/api/follow/{segment}
+    #   SPRING_CLOUD_GATEWAY_ROUTES[5]_URI: http://trending-service:8065
+    #   SPRING_CLOUD_GATEWAY_ROUTES[5]_ID: trending-service
+    #   SPRING_CLOUD_GATEWAY_ROUTES[5]_PREDICATES[0]: Path=/api/trending/{segment}
+    #   SPRING_CLOUD_GATEWAY_ROUTES[6]_URI: http://like-service:8064
+    #   SPRING_CLOUD_GATEWAY_ROUTES[6]_ID: like-service
+    #   SPRING_CLOUD_GATEWAY_ROUTES[6]_PREDICATES[0]: Path=/api/like/{segment}
+
   kafdrop:
     image: obsidiandynamics/kafdrop
     restart: "no"
