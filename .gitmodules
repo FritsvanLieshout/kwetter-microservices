@@ -33,3 +33,7 @@
 [submodule "ws-service"]
     path = services/ws-service
     url = https://github.com/FritsvanLieshout/ws-service.git
+
+[submodule "like-service"]
+    path = services/like-service
+    url = https://github.com/FritsvanLieshout/like-service.git    
