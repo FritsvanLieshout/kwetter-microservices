@@ -22,11 +22,11 @@ spec:
         - containerPort: 2181
         env:
         - name: ZOOKEEPER_CLIENT_PORT
-          value: 2181
+          value: '2181'
         - name: ZOOKEEPER_TICK_TIME
-          value: 2000
+          value: '2000'
         - name: ZOOKEEPER_SYNC_LIMIT
-          value: 2
+          value: '2'
         resources:
           limits:
             memory: 256Mi
@@ -73,7 +73,7 @@ spec:
         - name: KAFKA_BROKER_ID
           value: "o"
         - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
-          value: 1
+          value: '1'
         resources:
           limits:
             memory: 256Mi
