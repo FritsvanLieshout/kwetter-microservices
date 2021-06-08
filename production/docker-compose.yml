@@ -1,20 +1,19 @@
 version: '3.3'
 services:
   eureka-discovery-service:
-    image: eureka-discovery-service:0.0.1-SNAPSHOT
+    image: kwetterfrits/eureka-discovery-service:latest
     container_name: eureka-discovery-service
     ports: 
       - "8761:8761"
     environment:
       EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+
   mysql: 
     image: mysql:latest
     container_name: kwetter_account_db
     environment:
       MYSQL_ROOT_PASSWORD: Kw3tter!
       MYSQL_DATABASE: account_db
-    volumes:
-      - mysql_db_user:/var/lib/mysql  
     ports:
       - "3306:3306"
     restart: always
@@ -25,8 +24,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: Kw3tter!
       MYSQL_DATABASE: auth_user
-    volumes:
-      - mysql_db_auth:/var/lib/mysql
     ports:
       - "3307:3307"
     restart: always
@@ -65,9 +62,6 @@ services:
     environment: 
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: Kw3tter!
-    volumes:
-      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-      - mongodb_timeline_container:/data/db
     ports:
       - "27018:27017"
   
@@ -77,9 +71,6 @@ services:
     environment: 
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: Kw3tter!
-    volumes:
-      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-      - mongodb_follow_container:/data/db
     ports:
       - "27019:27017"
 
@@ -89,9 +80,6 @@ services:
     environment: 
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: Kw3tter!
-    volumes:
-      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-      - mongodb_tweet_container:/data/db
     ports:
       - "27020:27017"
   
@@ -101,9 +89,6 @@ services:
     environment: 
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: Kw3tter!
-    volumes:
-      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-      - mongodb_trending_container:/data/db
     ports:
       - "27021:27017"
   
@@ -113,9 +98,6 @@ services:
     environment: 
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: Kw3tter!
-    volumes:
-      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-      - mongodb_like_container:/data/db
     ports:
       - "27022:27017"
 
@@ -233,31 +215,6 @@ services:
       - like-service
       - trending-service
       - follow-service
-    # environment:
-    #   SPRING_CLOUD_GATEWAY_ROUTES[0]_URI: http://tweet-service:8070
-    #   SPRING_CLOUD_GATEWAY_ROUTES[0]_ID: tweet-service
-    #   SPRING_CLOUD_GATEWAY_ROUTES[0]_PREDICATES[0]: Path=/api/tweets/{segment}
-    #   SPRING_CLOUD_GATEWAY_ROUTES[0]_PREDICATES[1]: Method=GET, POST, DELETE, PUT, OPTIONS
-    #   SPRING_CLOUD_GATEWAY_ROUTES[1]_URI: http://user-service:8069
-    #   SPRING_CLOUD_GATEWAY_ROUTES[1]_ID: user-service
-    #   SPRING_CLOUD_GATEWAY_ROUTES[1]_PREDICATES[0]: Path=/api/user/{segment}
-    #   SPRING_CLOUD_GATEWAY_ROUTES[1]_PREDICATES[1]: Method=GET, POST, DELETE, PUT, OPTIONS
-    #   SPRING_CLOUD_GATEWAY_ROUTES[2]_URI: http://timeline-service:8068
-    #   SPRING_CLOUD_GATEWAY_ROUTES[2]_ID: timeline-service
-    #   SPRING_CLOUD_GATEWAY_ROUTES[2]_PREDICATES[0]: Path=/api/timeline/{segment}
-    #   SPRING_CLOUD_GATEWAY_ROUTES[2]_PREDICATES[1]: Method=GET, POST, DELETE, PUT, OPTIONS
-    #   SPRING_CLOUD_GATEWAY_ROUTES[3]_URI: http://auth-service:8067
-    #   SPRING_CLOUD_GATEWAY_ROUTES[3]_ID: auth-service
-    #   SPRING_CLOUD_GATEWAY_ROUTES[3]_PREDICATES[0]: Path=/api/auth/{segment}
-    #   SPRING_CLOUD_GATEWAY_ROUTES[4]_URI: http://follow-service:8066
-    #   SPRING_CLOUD_GATEWAY_ROUTES[4]_ID: follow-service
-    #   SPRING_CLOUD_GATEWAY_ROUTES[4]_PREDICATES[0]: Path=/api/follow/{segment}
-    #   SPRING_CLOUD_GATEWAY_ROUTES[5]_URI: http://trending-service:8065
-    #   SPRING_CLOUD_GATEWAY_ROUTES[5]_ID: trending-service
-    #   SPRING_CLOUD_GATEWAY_ROUTES[5]_PREDICATES[0]: Path=/api/trending/{segment}
-    #   SPRING_CLOUD_GATEWAY_ROUTES[6]_URI: http://like-service:8064
-    #   SPRING_CLOUD_GATEWAY_ROUTES[6]_ID: like-service
-    #   SPRING_CLOUD_GATEWAY_ROUTES[6]_PREDICATES[0]: Path=/api/like/{segment}
 
   kafdrop:
     image: obsidiandynamics/kafdrop
@@ -269,19 +226,26 @@ services:
     depends_on:
       - "kafka"
   zookeeper:
-    extends:
-      file: kafka.yml
-      service: zookeeper
-  kafka:
-    extends:
-      file: kafka.yml
-      service: kafka
+    image: confluentinc/cp-zookeeper:5.3.1
+    container_name: zookeeper
+    hostname: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_SYNC_LIMIT: 2
     
-volumes:
-  mongodb_like_container:
-  mongodb_trending_container:
-  mongodb_tweet_container:
-  mongodb_timeline_container:
-  mongodb_follow_container:
-  mysql_db_user:  
-  mysql_db_auth:
+  kafka:
+    image: confluentinc/cp-kafka:5.3.1
+    container_name: kafka
+    hostname: kafka
+    environment:
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://:9092,PLAINTEXT_HOST://0.0.0.0:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_BROKER_ID: 2
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - 9092:9092
+      - 29092:29092

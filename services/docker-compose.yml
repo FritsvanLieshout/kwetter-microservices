@@ -3,6 +3,8 @@
 # 2. docker compose up
 # 3. docker compose down --rmi all -v
 
+# 4. C:\Users\frits\Documents\Semester6\kompose-windows-amd64.exe convert -f docker-compose.yml -o deployment.yml
+
 version: '3.3'
 services:
   eureka-discovery-service:
@@ -48,9 +50,9 @@ services:
     restart: always
         
     depends_on:
-      - mysql
+      - mysql_db_user
     environment:
-      PMA_HOST: mysql
+      PMA_HOST: mysql_db_user
       MYSQL_ROOT_PASSWORD: Kw3tter!
 
   phpmyadmin-auth:
