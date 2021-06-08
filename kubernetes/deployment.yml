@@ -15,22 +15,22 @@ spec:
         app: zookeeper
     spec:
       containers:
-        - name: zookeeper
-          imagePullPolicy: Always
-          image: confluentinc/cp-zookeeper:5.3.1
-          ports: 
-            - containerPort: 2181
-          env:
-            - name: ZOOKEEPER_CLIENT_PORT
-              value: 2181
-            - name: ZOOKEEPER_TICK_TIME
-              value: 2000
-            - name: ZOOKEEPER_SYNC_LIMIT
-              value: 2
-          resources:
-            limits:
-              memory: 256Mi
-              cpu: 100m
+      - name: zookeeper
+        imagePullPolicy: Always
+        image: confluentinc/cp-zookeeper:5.3.1
+        ports: 
+        - containerPort: 2181
+        env:
+        - name: ZOOKEEPER_CLIENT_PORT
+          value: 2181
+        - name: ZOOKEEPER_TICK_TIME
+          value: 2000
+        - name: ZOOKEEPER_SYNC_LIMIT
+          value: 2
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 100m
 ---
 apiVersion: v1
 kind: Service
@@ -40,8 +40,8 @@ spec:
   selector:
     app: zookeeper
   ports:
-    - port: 2181
-      protocol: TCP
+  - port: 2181
+    protocol: TCP
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -60,24 +60,24 @@ spec:
         id: "o"
     spec:
       containers: 
-        - name: kafka
-          imagePullPolicy: Always
-          image: confluentinc/cp-kafka:5.3.1
-          ports:
-            - containerPort: 9092
-          env:
-            - name: KAFKA_ADVERTISED_LISTENERS
-              value: PLAINTEXT://localhost:9092
-            - name: KAFKA_ZOOKEEPER_CONNECT
-              value: zookeeper:2181
-            - name: KAFKA_BROKER_ID
-              value: "o"
-            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
-              value: 1
-          resources:
-            limits:
-              memory: 256Mi
-              cpu: 100m
+      - name: kafka
+        imagePullPolicy: Always
+        image: confluentinc/cp-kafka:5.3.1
+        ports:
+        - containerPort: 9092
+        env:
+        - name: KAFKA_ADVERTISED_LISTENERS
+          value: PLAINTEXT://localhost:9092
+        - name: KAFKA_ZOOKEEPER_CONNECT
+          value: zookeeper:2181
+        - name: KAFKA_BROKER_ID
+          value: "o"
+        - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+          value: 1
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 100m
 ---
 apiVersion: v1
 kind: Service
@@ -89,8 +89,8 @@ spec:
     id: "o"
   type: LoadBalancer #Not Sure
   ports:
-    - port: 9092     
-      targetPort: 9092
+  - port: 9092     
+    targetPort: 9092
 ---
 #MONGO DATABASES
 
@@ -111,13 +111,13 @@ spec:
         selector: mongodb-timeline
     spec:
       containers:
-        - name: mongodb-timeline
-          image: mongo:latest
-          env:
-            - name: MONGO_INITDB_ROOT_USERNAME
-              value: root
-            - name: MONGO_INITDB_ROOT_PASSWORD
-              value: Kw3tter!
+      - name: mongodb-timeline
+        image: mongo:latest
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: root
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: Kw3tter!
 ---
 apiVersion: v1
 kind: Service
@@ -147,13 +147,13 @@ spec:
         selector: mongodb-follow
     spec:
       containers:
-        - name: mongodb-follow
-          image: mongo:latest
-          env:
-            - name: MONGO_INITDB_ROOT_USERNAME
-              value: root
-            - name: MONGO_INITDB_ROOT_PASSWORD
-              value: Kw3tter!
+      - name: mongodb-follow
+        image: mongo:latest
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: root
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: Kw3tter!
 ---
 apiVersion: v1
 kind: Service
@@ -183,13 +183,13 @@ spec:
         selector: mongodb-tweet
     spec:
       containers:
-        - name: mongodb-tweet
-          image: mongo:latest
-          env:
-            - name: MONGO_INITDB_ROOT_USERNAME
-              value: root
-            - name: MONGO_INITDB_ROOT_PASSWORD
-              value: Kw3tter!
+      - name: mongodb-tweet
+        image: mongo:latest
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: root
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: Kw3tter!
 ---
 apiVersion: v1
 kind: Service
@@ -219,13 +219,13 @@ spec:
         selector: mongodb-trending
     spec:
       containers:
-        - name: mongodb-trending
-          image: mongo:latest
-          env:
-            - name: MONGO_INITDB_ROOT_USERNAME
-              value: root
-            - name: MONGO_INITDB_ROOT_PASSWORD
-              value: Kw3tter!
+      - name: mongodb-trending
+        image: mongo:latest
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: root
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: Kw3tter!
 ---
 apiVersion: v1
 kind: Service
@@ -255,13 +255,13 @@ spec:
         selector: mongodb-like
     spec:
       containers:
-        - name: mongodb-like
-          image: mongo:latest
-          env:
-            - name: MONGO_INITDB_ROOT_USERNAME
-              value: root
-            - name: MONGO_INITDB_ROOT_PASSWORD
-              value: Kw3tter!
+      - name: mongodb-like
+        image: mongo:latest
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: root
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: Kw3tter!
 ---
 apiVersion: v1
 kind: Service
@@ -293,17 +293,17 @@ spec:
         app: mysql-db-auth
     spec:
       containers:
-        - name: mysql-db-auth
-          imagePullPolicy: Always
-          image: mysql:latest
-          ports:
-            - containerPort: 3306
-              name: mysql-auth
-          env:
-            - name: MYSQL_ROOT_PASSWORD
-              value: Kw3tter!
-            - name: MYSQL_DATABASE
-              value: auth-db
+      - name: mysql-db-auth
+        imagePullPolicy: Always
+        image: mysql:latest
+        ports:
+        - containerPort: 3306
+          name: mysql-auth
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: Kw3tter!
+        - name: MYSQL_DATABASE
+          value: auth-db
 ---
 apiVersion: v1
 kind: Service
@@ -333,17 +333,17 @@ spec:
         app: mysql-db-user
     spec:
       containers:
-        - name: mysql-db-user
-          imagePullPolicy: Always
-          image: mysql:latest
-          ports:
-            - containerPort: 3306
-              name: mysql-user
-          env:
-            - name: MYSQL_ROOT_PASSWORD
-              value: Kw3tter!
-            - name: MYSQL_DATABASE
-              value: user-db
+      - name: mysql-db-user
+        imagePullPolicy: Always
+        image: mysql:latest
+        ports:
+        - containerPort: 3306
+          name: mysql-user
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: Kw3tter!
+        - name: MYSQL_DATABASE
+          value: user-db
 ---
 apiVersion: v1
 kind: Service
@@ -351,7 +351,7 @@ metadata:
   name: mysql-db-user-service
 spec:
   ports:
-    - port: 3306
+  - port: 3306
   selector:
     app: mysql-db-user
   clusterIP: None
@@ -374,18 +374,18 @@ spec:
     spec:
       restartPolicy: Always
       containers:
-        - name: api-gateway
-          imagePullPolicy: Always
-          image: kwetterfrits/api-gateway:latest
-          ports: 
-            - containerPort: 8050
-          env:
-            - name: SPRING_DATA_MONGODB_HOST
-              value: mongodb_tweet
-          resources:
-            limits:
-              memory: 256Mi
-              cpu: 100m
+      - name: api-gateway
+        imagePullPolicy: Always
+        image: kwetterfrits/api-gateway:latest
+        ports: 
+        - containerPort: 8050
+        env:
+        - name: SPRING_DATA_MONGODB_HOST
+          value: mongodb_tweet
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 100m
 ---
 apiVersion: v1
 kind: Service
@@ -396,8 +396,8 @@ spec:
     app: api-gateway
   type: LoadBalancer
   ports:
-    - port: 8050
-      targetPort: 8050
+  - port: 8050
+    targetPort: 8050
 ---
 #DISCOVERY-SERVICE
 
@@ -416,18 +416,18 @@ spec:
         app: eureka-discovery-service
     spec:
       containers:
-        - name: eureka-discovery-service
-          imagePullPolicy: Always
-          image: kwetterfrits/eureka-discovery-service:latest
-          ports:
-            - containerPort: 8761
-          env:
-            - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
-              value: "true"
-          resources:
-            limits:
-              memory: 256Mi
-              cpu: 100m    
+      - name: eureka-discovery-service
+        imagePullPolicy: Always
+        image: kwetterfrits/eureka-discovery-service:latest
+        ports:
+        - containerPort: 8761
+        env:
+        - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
+          value: "true"
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 100m    
 ---
 apiVersion: v1
 kind: Service
@@ -437,8 +437,8 @@ spec:
   selector: 
     app: eureka-discovery-service
   ports:
-    - port: 8761
-      targetPort: 8761
+  - port: 8761
+    targetPort: 8761
 ---
 #MICROSERVICES
 
@@ -458,18 +458,18 @@ spec:
     spec:
       restartPolicy: Always
       containers:
-        - name: tweet-service
-          imagePullPolicy: Always
-          image: kwetterfrits/tweet-service:latest
-          ports: 
-            - containerPort: 8070
-          env: 
-            - name: SPRING_DATA_MONGODB_HOST
-              value: mongodb-tweet
-          resources:
-            limits:
-              memory: 256Mi
-              cpu: 100m
+      - name: tweet-service
+        imagePullPolicy: Always
+        image: kwetterfrits/tweet-service:latest
+        ports: 
+        - containerPort: 8070
+        env: 
+        - name: SPRING_DATA_MONGODB_HOST
+          value: mongodb-tweet
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 100m
 ---
 apiVersion: v1
 kind: Service
@@ -479,8 +479,8 @@ spec:
   selector: 
     app: tweet-service
   ports:
-    - port: 8070
-      targetPort: 8070
+  - port: 8070
+    targetPort: 8070
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -498,22 +498,22 @@ spec:
     spec:
       restartPolicy: Always
       containers:
-        - name: user-service
-          imagePullPolicy: Always
-          image: kwetterfrits/user-service:latest
-          ports: 
-            - containerPort: 8069  
-          env: 
-            - name: SPRING_DATASOURCE_USERNAME
-              value: root
-            - name: SPRING_DATASOURCE_PASSWORD
-              value: Kw3tter!
-            - name: SPRING_DATASOURCE_URL
-              value: jdbc:mysql://mysql_db_user:3306/user_db?createDatabaseIfNotExist=true
-          resources:
-            limits:
-              memory: 256Mi
-              cpu: 100m
+      - name: user-service
+        imagePullPolicy: Always
+        image: kwetterfrits/user-service:latest
+        ports: 
+        - containerPort: 8069  
+        env: 
+        - name: SPRING_DATASOURCE_USERNAME
+          value: root
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: Kw3tter!
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:mysql://mysql_db_user:3306/user_db?createDatabaseIfNotExist=true
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 100m
 ---
 apiVersion: v1
 kind: Service
@@ -523,8 +523,8 @@ spec:
   selector: 
     app: user-service
   ports:
-    - port: 8069
-      targetPort: 8069
+  - port: 8069
+    targetPort: 8069
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -542,18 +542,18 @@ spec:
     spec:
       restartPolicy: Always
       containers:
-        - name: timeline-service
-          imagePullPolicy: Always
-          image: kwetterfrits/timeline-service:latest
-          ports: 
-            - containerPort: 8068  
-          env: 
-            - name: SPRING_DATA_MONGODB_HOST
-              value: mongodb-timeline
-          resources:
-            limits:
-              memory: 256Mi
-              cpu: 100m
+      - name: timeline-service
+        imagePullPolicy: Always
+        image: kwetterfrits/timeline-service:latest
+        ports: 
+        - containerPort: 8068  
+        env: 
+        - name: SPRING_DATA_MONGODB_HOST
+          value: mongodb-timeline
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 100m
 ---
 apiVersion: v1
 kind: Service
@@ -563,8 +563,8 @@ spec:
   selector: 
     app: timeline-service
   ports:
-    - port: 8068
-      targetPort: 8068
+  - port: 8068
+    targetPort: 8068
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -582,22 +582,22 @@ spec:
     spec:
       restartPolicy: Always
       containers:
-        - name: auth-service
-          imagePullPolicy: Always
-          image: kwetterfrits/auth-service:latest
-          ports: 
-            - containerPort: 8067  
-          env: 
-            - name: SPRING_DATASOURCE_USERNAME
-              value: root
-            - name: SPRING_DATASOURCE_PASSWORD
-              value: Kw3tter!
-            - name: SPRING_DATASOURCE_URL
-              value: jdbc:mysql://mysql_db_auth:3306/auth_user?createDatabaseIfNotExist=true
-          resources:
-            limits:
-              memory: 256Mi
-              cpu: 100m
+      - name: auth-service
+        imagePullPolicy: Always
+        image: kwetterfrits/auth-service:latest
+        ports: 
+        - containerPort: 8067  
+        env: 
+        - name: SPRING_DATASOURCE_USERNAME
+          value: root
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: Kw3tter!
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:mysql://mysql_db_auth:3306/auth_user?createDatabaseIfNotExist=true
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 100m
 ---
 apiVersion: v1
 kind: Service
@@ -607,8 +607,8 @@ spec:
   selector: 
     app: auth-service
   ports:
-    - port: 8067
-      targetPort: 8067
+  - port: 8067
+    targetPort: 8067
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -626,18 +626,18 @@ spec:
     spec:
       restartPolicy: Always
       containers:
-        - name: follow-service
-          imagePullPolicy: Always
-          image: kwetterfrits/follow-service:latest
-          ports: 
-            - containerPort: 8066  
-          env: 
-            - name: SPRING_DATA_MONGODB_HOST
-              value: mongodb-follow
-          resources:
-            limits:
-              memory: 256Mi
-              cpu: 100m
+      - name: follow-service
+        imagePullPolicy: Always
+        image: kwetterfrits/follow-service:latest
+        ports: 
+        - containerPort: 8066  
+        env: 
+        - name: SPRING_DATA_MONGODB_HOST
+          value: mongodb-follow
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 100m
 ---
 apiVersion: v1
 kind: Service
@@ -647,8 +647,8 @@ spec:
   selector: 
     app: follow-service
   ports:
-    - port: 8066
-      targetPort: 8066
+  - port: 8066
+    targetPort: 8066
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -666,18 +666,18 @@ spec:
     spec:
       restartPolicy: Always
       containers:
-        - name: trending-service
-          imagePullPolicy: Always
-          image: kwetterfrits/trending-service:latest
-          ports: 
-            - containerPort: 8065  
-          env: 
-            - name: SPRING_DATA_MONGODB_HOST
-              value: mongodb-trending
-          resources:
-            limits:
-              memory: 256Mi
-              cpu: 100m
+      - name: trending-service
+        imagePullPolicy: Always
+        image: kwetterfrits/trending-service:latest
+        ports: 
+        - containerPort: 8065  
+        env: 
+        - name: SPRING_DATA_MONGODB_HOST
+          value: mongodb-trending
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 100m
 ---
 apiVersion: v1
 kind: Service
@@ -687,8 +687,8 @@ spec:
   selector: 
     app: trending-service
   ports:
-    - port: 8065
-      targetPort: 8065
+  - port: 8065
+    targetPort: 8065
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -706,18 +706,18 @@ spec:
     spec:
       restartPolicy: Always
       containers:
-        - name: like-service
-          imagePullPolicy: Always
-          image: kwetterfrits/like-service:latest
-          ports: 
-            - containerPort: 8064  
-          env: 
-            - name: SPRING_DATA_MONGODB_HOST
-              value: mongodb-like
-          resources:
-            limits:
-              memory: 256Mi
-              cpu: 100m
+      - name: like-service
+        imagePullPolicy: Always
+        image: kwetterfrits/like-service:latest
+        ports: 
+        - containerPort: 8064  
+        env: 
+        - name: SPRING_DATA_MONGODB_HOST
+          value: mongodb-like
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 100m
 ---
 apiVersion: v1
 kind: Service
@@ -727,8 +727,8 @@ spec:
   selector: 
     app: like-service
   ports:
-    - port: 8064
-      targetPort: 8064
+  - port: 8064
+    targetPort: 8064
 ---
 #REACT
 
@@ -749,15 +749,15 @@ spec:
         app: kwetter-platform
     spec:
       containers:
-        - name: kwetter-platform
-          imagePullPolicy: Always
-          image: kwetterfrits/kwetter-platform:latest
-          ports:
-            - containerPort: 3000
-          resources:
-            limits:
-              memory: 500Mi
-              cpu: 100m
+      - name: kwetter-platform
+        imagePullPolicy: Always
+        image: kwetterfrits/kwetter-platform:latest
+        ports:
+        - containerPort: 3000
+        resources:
+          limits:
+            memory: 500Mi
+            cpu: 100m
 ---
 apiVersion: v1
 kind: Service
@@ -768,5 +768,5 @@ spec:
     app: kwetter-platform
   type: LoadBalancer
   ports:
-    - port: 3000
-      targetPort: 3000
+  - port: 3000
+    targetPort: 3000
