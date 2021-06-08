@@ -50,9 +50,9 @@ services:
     restart: always
         
     depends_on:
-      - mysql
+      - mysql_db_user
     environment:
-      PMA_HOST: mysql
+      PMA_HOST: mysql_db_user
       MYSQL_ROOT_PASSWORD: Kw3tter!
 
   phpmyadmin-auth:

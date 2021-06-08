@@ -372,6 +372,7 @@ spec:
       labels:
         app: api-gateway
     spec:
+      restartPolicy: Always
       containers:
         - name: api-gateway
           imagePullPolicy: Always
@@ -455,6 +456,7 @@ spec:
       labels:
         app: tweet-service
     spec:
+      restartPolicy: Always
       containers:
         - name: tweet-service
           imagePullPolicy: Always
@@ -494,6 +496,7 @@ spec:
       labels:
         app: user-service
     spec:
+      restartPolicy: Always
       containers:
         - name: user-service
           imagePullPolicy: Always
@@ -537,6 +540,7 @@ spec:
       labels:
         app: timeline-service
     spec:
+      restartPolicy: Always
       containers:
         - name: timeline-service
           imagePullPolicy: Always
@@ -576,6 +580,7 @@ spec:
       labels:
         app: auth-service
     spec:
+      restartPolicy: Always
       containers:
         - name: auth-service
           imagePullPolicy: Always
@@ -619,6 +624,7 @@ spec:
       labels:
         app: follow-service
     spec:
+      restartPolicy: Always
       containers:
         - name: follow-service
           imagePullPolicy: Always
@@ -658,6 +664,7 @@ spec:
       labels:
         app: trending-service
     spec:
+      restartPolicy: Always
       containers:
         - name: trending-service
           imagePullPolicy: Always
@@ -697,6 +704,7 @@ spec:
       labels:
         app: like-service
     spec:
+      restartPolicy: Always
       containers:
         - name: like-service
           imagePullPolicy: Always
@@ -721,3 +729,44 @@ spec:
   ports:
     - port: 8064
       targetPort: 8064
+---
+#REACT
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kwetter-platform-deployment
+  labels:
+    app: kwetter-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kwetter-platform
+  template:
+    metadata:
+      labels:
+        app: kwetter-platform
+    spec:
+      containers:
+        - name: kwetter-platform
+          imagePullPolicy: Always
+          image: kwetterfrits/kwetter-platform:latest
+          ports:
+            - containerPort: 3000
+          resources:
+            limits:
+              memory: 500Mi
+              cpu: 100m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kwetter-platform-service
+spec:
+  selector:
+    app: kwetter-platform
+  type: LoadBalancer
+  ports:
+    - port: 3000
+      targetPort: 3000
