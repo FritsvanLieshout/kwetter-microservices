@@ -444,6 +444,8 @@ spec:
         env:
         - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
           value: "true"
+        - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+          value: http://eureka-discovery-service-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -460,7 +462,6 @@ spec:
   ports:
   - port: 8761
     targetPort: 8761
-    nodePort: 30761
 ---
 #MICROSERVICES
 
