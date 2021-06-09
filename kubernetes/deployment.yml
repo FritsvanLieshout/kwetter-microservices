@@ -448,6 +448,8 @@ spec:
         ports:
         - containerPort: 8761
         env:
+        - name: _JAVA_OPTIONS
+          value: -Deureka.instance.preferIpAddress=false -Deureka.client.serviceUrl.defaultZone=http://eureka-discovery-service:8761/eureka
         - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
           value: "true"
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
@@ -464,10 +466,9 @@ metadata:
 spec:
   selector: 
     app: eureka-discovery-service
-  type: LoadBalancer
+  clusterIP: None
   ports:
   - port: 8761
-    targetPort: 80
 ---
 #MICROSERVICES
 
