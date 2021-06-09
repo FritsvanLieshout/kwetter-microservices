@@ -456,7 +456,7 @@ metadata:
 spec:
   selector: 
     app: eureka-discovery-service
-  type: NodePort
+  type: LoadBalancer
   ports:
   - port: 8761
     targetPort: 8761
