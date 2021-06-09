@@ -97,7 +97,7 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mongodb-timeline-standalone
+  name: mongodb-timeline-statefulset
 spec:
   serviceName: mongodb-timeline
   replicas: 1
@@ -129,6 +129,10 @@ spec:
   clusterIP: None
   selector:
     app: mongodb-timeline
+  ports:
+  - name: "27018"
+    port: 27018
+    targetPort: 27017
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -165,6 +169,10 @@ spec:
   clusterIP: None
   selector:
     app: mongodb-follow
+  ports:
+  - name: "27019"
+    port: 27019
+    targetPort: 27017
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -201,6 +209,10 @@ spec:
   clusterIP: None
   selector:
     app: mongodb-tweet
+  ports:
+  - name: "27020"
+    port: 27020
+    targetPort: 27017
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -237,6 +249,10 @@ spec:
   clusterIP: None
   selector:
     app: mongodb-trending
+  ports:
+  - name: "27021"
+    port: 27021
+    targetPort: 27017
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -273,6 +289,10 @@ spec:
   clusterIP: None
   selector:
     app: mongodb-like
+  ports:
+  - name: "27022"
+    port: 27022
+    targetPort: 27017
 ---
 #MYSQL DATABASES
 
@@ -382,6 +402,8 @@ spec:
         env:
         - name: SPRING_DATA_MONGODB_HOST
           value: mongodb_tweet
+        - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+          value: http://eureka-discovery-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -436,9 +458,11 @@ metadata:
 spec:
   selector: 
     app: eureka-discovery-service
+  type: NodePort
   ports:
   - port: 8761
     targetPort: 8761
+    nodePort: 38761
 ---
 #MICROSERVICES
 
@@ -466,6 +490,8 @@ spec:
         env: 
         - name: SPRING_DATA_MONGODB_HOST
           value: mongodb-tweet
+        - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+          value: http://eureka-discovery-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -510,6 +536,8 @@ spec:
           value: Kw3tter!
         - name: SPRING_DATASOURCE_URL
           value: jdbc:mysql://mysql_db_user:3306/user_db?createDatabaseIfNotExist=true
+        - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+          value: http://eureka-discovery-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -550,6 +578,8 @@ spec:
         env: 
         - name: SPRING_DATA_MONGODB_HOST
           value: mongodb-timeline
+        - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+          value: http://eureka-discovery-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -594,6 +624,8 @@ spec:
           value: Kw3tter!
         - name: SPRING_DATASOURCE_URL
           value: jdbc:mysql://mysql_db_auth:3306/auth_user?createDatabaseIfNotExist=true
+        - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+          value: http://eureka-discovery-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -634,6 +666,8 @@ spec:
         env: 
         - name: SPRING_DATA_MONGODB_HOST
           value: mongodb-follow
+        - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+          value: http://eureka-discovery-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -674,6 +708,8 @@ spec:
         env: 
         - name: SPRING_DATA_MONGODB_HOST
           value: mongodb-trending
+        - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+          value: http://eureka-discovery-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -714,6 +750,8 @@ spec:
         env: 
         - name: SPRING_DATA_MONGODB_HOST
           value: mongodb-like
+        - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+          value: http://eureka-discovery-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
