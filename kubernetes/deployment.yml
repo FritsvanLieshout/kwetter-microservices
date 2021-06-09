@@ -397,8 +397,8 @@ spec:
       - name: api-gateway
         imagePullPolicy: Always
         image: kwetterfrits/api-gateway:latest
-        ports: 
-        - containerPort: 8050
+        ports:
+        - containerPort: 80
         env:
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
           value: http://eureka-discovery-service-service:8761/eureka
@@ -416,8 +416,9 @@ spec:
     app: api-gateway
   type: LoadBalancer
   ports:
-  - port: 8050
-    targetPort: 8050
+  - protocol: TCP
+    port: 8050
+    targetPort: 80
 ---
 #DISCOVERY-SERVICE
 
