@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: zookeeper-deployment
+  name: zookeeper
 spec:
   replicas: 1
   selector:
@@ -35,7 +35,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata: 
-  name: zookeeper-service
+  name: zookeeper
 spec:
   selector:
     app: zookeeper
@@ -46,7 +46,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kafka-deployment
+  name: kafka
 spec:
   replicas: 1
   selector: 
@@ -69,7 +69,7 @@ spec:
         - name: KAFKA_ADVERTISED_LISTENERS
           value: PLAINTEXT://localhost:9092
         - name: KAFKA_ZOOKEEPER_CONNECT
-          value: zookeeper-service:2181
+          value: zookeeper:2181
         - name: KAFKA_BROKER_ID
           value: '1'
         - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
@@ -82,7 +82,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: kafka-service
+  name: kafka
 spec:
   selector:
     app: kafka
@@ -97,7 +97,7 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mongodb-timeline-statefulset
+  name: mongodb-timeline
 spec:
   serviceName: mongodb-timeline
   replicas: 1
@@ -122,7 +122,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongodb-timeline-service  
+  name: mongodb-timeline
   labels:
     app: mongodb-timeline
 spec:
@@ -137,7 +137,7 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mongodb-follow-statefulset
+  name: mongodb-follow
 spec:
   serviceName: mongodb-follow
   replicas: 1
@@ -162,7 +162,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongodb-follow-service  
+  name: mongodb-follow
   labels:
     app: mongodb-follow
 spec:
@@ -177,7 +177,7 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mongodb-tweet-statefulset
+  name: mongodb-tweet
 spec:
   serviceName: mongodb-tweet
   replicas: 1
@@ -202,7 +202,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongodb-tweet-service  
+  name: mongodb-tweet
   labels:
     app: mongodb-tweet
 spec:
@@ -217,7 +217,7 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mongodb-trending-statefulset
+  name: mongodb-trending
 spec:
   serviceName: mongodb-trending
   replicas: 1
@@ -242,7 +242,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongodb-trending-service  
+  name: mongodb-trending
   labels:
     app: mongodb-trending
 spec:
@@ -257,7 +257,7 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mongodb-like-statefulset
+  name: mongodb-like
 spec:
   serviceName: mongodb-like
   replicas: 1
@@ -282,7 +282,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongodb-like-service  
+  name: mongodb-like
   labels:
     app: mongodb-like
 spec:
@@ -299,7 +299,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql-db-auth-deployment
+  name: mysql-db-auth
 spec:
   replicas: 1
   selector:
@@ -328,7 +328,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql-db-auth-service
+  name: mysql-db-auth
 spec:
   ports:
     - port: 3306
@@ -339,7 +339,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql-db-user-deployment
+  name: mysql-db-user
 spec:
   replicas: 1
   selector:
@@ -368,7 +368,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql-db-user-service
+  name: mysql-db-user
 spec:
   ports:
   - port: 3306
@@ -381,7 +381,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api-gateway-deployment
+  name: api-gateway
 spec:
   replicas: 1
   selector:
@@ -401,7 +401,7 @@ spec:
         - containerPort: 80
         env:
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-          value: http://eureka-discovery-service-service:8761/eureka
+          value: http://eureka-discovery-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -410,7 +410,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: api-gateway-service
+  name: api-gateway
 spec:
   selector: 
     app: api-gateway
@@ -425,7 +425,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: eureka-discovery-service-deployment
+  name: eureka-discovery-service
 spec:
   replicas: 1
   selector:
@@ -446,7 +446,7 @@ spec:
         - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
           value: "true"
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-          value: http://eureka-discovery-service-service:8761/eureka
+          value: http://eureka-discovery-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -455,7 +455,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: eureka-discovery-service-service
+  name: eureka-discovery-service
 spec:
   selector: 
     app: eureka-discovery-service
@@ -469,7 +469,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tweet-service-deployment
+  name: tweet-service
 spec:
   replicas: 1
   selector:
@@ -489,9 +489,9 @@ spec:
         - containerPort: 8070
         env: 
         - name: SPRING_DATA_MONGODB_HOST
-          value: mongodb-tweet-service
+          value: mongodb-tweet
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-          value: http://eureka-discovery-service-service:8761/eureka
+          value: http://eureka-discovery-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -500,7 +500,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata: 
-  name: tweet-service-service
+  name: tweet-service
 spec:
   selector: 
     app: tweet-service
@@ -511,7 +511,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-service-deployment
+  name: user-service
 spec:
   replicas: 1
   selector:
@@ -535,9 +535,9 @@ spec:
         - name: SPRING_DATASOURCE_PASSWORD
           value: Kw3tter!
         - name: SPRING_DATASOURCE_URL
-          value: jdbc:mysql://mysql-db-user-service:3306/user_db?createDatabaseIfNotExist=true
+          value: jdbc:mysql://mysql-db-user:3306/user_db?createDatabaseIfNotExist=true
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-          value: http://eureka-discovery-service-service:8761/eureka
+          value: http://eureka-discovery-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -546,7 +546,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata: 
-  name: user-service-service
+  name: user-service
 spec:
   selector: 
     app: user-service
@@ -557,7 +557,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: timeline-service-deployment
+  name: timeline-service
 spec:
   replicas: 1
   selector:
@@ -577,9 +577,9 @@ spec:
         - containerPort: 8068  
         env: 
         - name: SPRING_DATA_MONGODB_HOST
-          value: mongodb-timeline-service
+          value: mongodb-timeline
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-          value: http://eureka-discovery-service-service:8761/eureka
+          value: http://eureka-discovery-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -588,7 +588,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata: 
-  name: timeline-service-service
+  name: timeline-service
 spec:
   selector: 
     app: timeline-service
@@ -599,7 +599,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth-service-deployment
+  name: auth-service
 spec:
   replicas: 1
   selector:
@@ -623,9 +623,9 @@ spec:
         - name: SPRING_DATASOURCE_PASSWORD
           value: Kw3tter!
         - name: SPRING_DATASOURCE_URL
-          value: jdbc:mysql://mysql-db-auth-service:3306/auth_user?createDatabaseIfNotExist=true
+          value: jdbc:mysql://mysql-db-auth:3306/auth_user?createDatabaseIfNotExist=true
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-          value: http://eureka-discovery-service-service:8761/eureka
+          value: http://eureka-discovery-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -634,7 +634,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata: 
-  name: auth-service-service
+  name: auth-service
 spec:
   selector: 
     app: auth-service
@@ -645,7 +645,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: follow-service-deployment
+  name: follow-service
 spec:
   replicas: 1
   selector:
@@ -665,9 +665,9 @@ spec:
         - containerPort: 8066  
         env: 
         - name: SPRING_DATA_MONGODB_HOST
-          value: mongodb-follow-service
+          value: mongodb-follow
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-          value: http://eureka-discovery-service-service:8761/eureka
+          value: http://eureka-discovery-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -676,7 +676,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata: 
-  name: follow-service-service
+  name: follow-service
 spec:
   selector: 
     app: follow-service
@@ -687,7 +687,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: trending-service-deployment
+  name: trending-service
 spec:
   replicas: 1
   selector:
@@ -707,9 +707,9 @@ spec:
         - containerPort: 8065  
         env: 
         - name: SPRING_DATA_MONGODB_HOST
-          value: mongodb-trending-service
+          value: mongodb-trending
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-          value: http://eureka-discovery-service-service:8761/eureka
+          value: http://eureka-discovery-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -718,7 +718,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata: 
-  name: trending-service-service
+  name: trending-service
 spec:
   selector: 
     app: trending-service
@@ -729,7 +729,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: like-service-deployment
+  name: like-service
 spec:
   replicas: 1
   selector:
@@ -749,9 +749,9 @@ spec:
         - containerPort: 8064  
         env: 
         - name: SPRING_DATA_MONGODB_HOST
-          value: mongodb-like-service
+          value: mongodb-like
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-          value: http://eureka-discovery-service-service:8761/eureka
+          value: http://eureka-discovery-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -760,7 +760,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata: 
-  name: like-service-service
+  name: like-service
 spec:
   selector: 
     app: like-service
@@ -773,7 +773,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kwetter-platform-deployment
+  name: kwetter-platform
   labels:
     app: kwetter-platform
 spec:
@@ -800,7 +800,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: kwetter-platform-service
+  name: kwetter-platform
 spec:
   selector:
     app: kwetter-platform
