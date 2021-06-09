@@ -52,12 +52,12 @@ spec:
   selector: 
     matchLabels: 
       app: kafka
-      id: '1'
+      id: 'o'
   template:
     metadata:
       labels:
         app: kafka
-        id: '1'
+        id: 'o'
     spec:
       containers: 
       - name: kafka
@@ -86,7 +86,7 @@ metadata:
 spec:
   selector:
     app: kafka
-    id: '1'
+    id: 'o'
   type: LoadBalancer
   ports:
   - port: 9092     
