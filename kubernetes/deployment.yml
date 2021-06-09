@@ -46,7 +46,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kafka-broker-deployment
+  name: kafka-deployment
 spec:
   replicas: 1
   selector: 
@@ -87,7 +87,7 @@ spec:
   selector:
     app: kafka
     id: "o"
-  type: LoadBalancer #Not Sure
+  type: LoadBalancer
   ports:
   - port: 9092     
     targetPort: 9092
@@ -137,7 +137,7 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mongodb-follow-standalone
+  name: mongodb-follow-statefulset
 spec:
   serviceName: mongodb-follow
   replicas: 1
@@ -177,7 +177,7 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mongodb-tweet-standalone
+  name: mongodb-tweet-statefulset
 spec:
   serviceName: mongodb-tweet
   replicas: 1
@@ -217,7 +217,7 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mongodb-trending-standalone
+  name: mongodb-trending-statefulset
 spec:
   serviceName: mongodb-trending
   replicas: 1
@@ -257,7 +257,7 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mongodb-like-standalone
+  name: mongodb-like-statefulset
 spec:
   serviceName: mongodb-like
   replicas: 1
@@ -400,10 +400,8 @@ spec:
         ports: 
         - containerPort: 8050
         env:
-        - name: SPRING_DATA_MONGODB_HOST
-          value: mongodb_tweet
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-          value: http://eureka-discovery-service:8761/eureka
+          value: http://eureka-discovery-service-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -489,9 +487,9 @@ spec:
         - containerPort: 8070
         env: 
         - name: SPRING_DATA_MONGODB_HOST
-          value: mongodb-tweet
+          value: mongodb-tweet-service
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-          value: http://eureka-discovery-service:8761/eureka
+          value: http://eureka-discovery-service-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -535,9 +533,9 @@ spec:
         - name: SPRING_DATASOURCE_PASSWORD
           value: Kw3tter!
         - name: SPRING_DATASOURCE_URL
-          value: jdbc:mysql://mysql_db_user:3306/user_db?createDatabaseIfNotExist=true
+          value: jdbc:mysql://mysql-db-user-service:3306/user_db?createDatabaseIfNotExist=true
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-          value: http://eureka-discovery-service:8761/eureka
+          value: http://eureka-discovery-service-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -577,9 +575,9 @@ spec:
         - containerPort: 8068  
         env: 
         - name: SPRING_DATA_MONGODB_HOST
-          value: mongodb-timeline
+          value: mongodb-timeline-service
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-          value: http://eureka-discovery-service:8761/eureka
+          value: http://eureka-discovery-service-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -623,9 +621,9 @@ spec:
         - name: SPRING_DATASOURCE_PASSWORD
           value: Kw3tter!
         - name: SPRING_DATASOURCE_URL
-          value: jdbc:mysql://mysql_db_auth:3306/auth_user?createDatabaseIfNotExist=true
+          value: jdbc:mysql://mysql-db-auth-service:3306/auth_user?createDatabaseIfNotExist=true
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-          value: http://eureka-discovery-service:8761/eureka
+          value: http://eureka-discovery-service-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -665,9 +663,9 @@ spec:
         - containerPort: 8066  
         env: 
         - name: SPRING_DATA_MONGODB_HOST
-          value: mongodb-follow
+          value: mongodb-follow-service
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-          value: http://eureka-discovery-service:8761/eureka
+          value: http://eureka-discovery-service-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -707,9 +705,9 @@ spec:
         - containerPort: 8065  
         env: 
         - name: SPRING_DATA_MONGODB_HOST
-          value: mongodb-trending
+          value: mongodb-trending-service
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-          value: http://eureka-discovery-service:8761/eureka
+          value: http://eureka-discovery-service-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -749,9 +747,9 @@ spec:
         - containerPort: 8064  
         env: 
         - name: SPRING_DATA_MONGODB_HOST
-          value: mongodb-like
+          value: mongodb-like-service
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-          value: http://eureka-discovery-service:8761/eureka
+          value: http://eureka-discovery-service-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
