@@ -530,7 +530,8 @@ spec:
         imagePullPolicy: Always
         image: kwetterfrits/tweet-service:latest
         ports: 
-        - containerPort: 8070
+        - containerPort: 80
+        - containerPort: 443
         env: 
         - name: SPRING_DATA_MONGODB_HOST
           value: mongodb-tweet
@@ -551,6 +552,8 @@ spec:
   ports:
   - port: 8070
     targetPort: 80
+  - port: 8470
+    targetPort: 443
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -572,7 +575,8 @@ spec:
         imagePullPolicy: Always
         image: kwetterfrits/user-service:latest
         ports: 
-        - containerPort: 8069  
+        - containerPort: 80
+        - containerPort: 443  
         env: 
         - name: SPRING_DATASOURCE_USERNAME
           value: root
@@ -597,6 +601,8 @@ spec:
   ports:
   - port: 8069
     targetPort: 80
+  - port: 8469
+    targetPort: 443
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -618,7 +624,8 @@ spec:
         imagePullPolicy: Always
         image: kwetterfrits/timeline-service:latest
         ports: 
-        - containerPort: 8068  
+        - containerPort: 80
+        - containerPort: 443
         env: 
         - name: SPRING_DATA_MONGODB_HOST
           value: mongodb-timeline
@@ -639,6 +646,8 @@ spec:
   ports:
   - port: 8068
     targetPort: 80
+  - port: 8468
+    targetPort: 443
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -660,7 +669,8 @@ spec:
         imagePullPolicy: Always
         image: kwetterfrits/auth-service:latest
         ports: 
-        - containerPort: 8067  
+        - containerPort: 80
+        - containerPort: 443
         env: 
         - name: SPRING_DATASOURCE_USERNAME
           value: root
@@ -685,6 +695,8 @@ spec:
   ports:
   - port: 8067
     targetPort: 80
+  - port: 8467
+    targetPort: 443
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -706,7 +718,8 @@ spec:
         imagePullPolicy: Always
         image: kwetterfrits/follow-service:latest
         ports: 
-        - containerPort: 8066  
+        - containerPort: 80
+        - containerPort: 443
         env: 
         - name: SPRING_DATA_MONGODB_HOST
           value: mongodb-follow
@@ -727,6 +740,8 @@ spec:
   ports:
   - port: 8066
     targetPort: 80
+  - port: 8466
+    targetPort: 443
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -748,7 +763,8 @@ spec:
         imagePullPolicy: Always
         image: kwetterfrits/trending-service:latest
         ports: 
-        - containerPort: 8065  
+        - containerPort: 80
+        - containerPort: 443 
         env: 
         - name: SPRING_DATA_MONGODB_HOST
           value: mongodb-trending
@@ -769,6 +785,8 @@ spec:
   ports:
   - port: 8065
     targetPort: 80
+  - port: 8465
+    targetPort: 443
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -790,7 +808,8 @@ spec:
         imagePullPolicy: Always
         image: kwetterfrits/like-service:latest
         ports: 
-        - containerPort: 8064  
+        - containerPort: 80
+        - containerPort: 443 
         env: 
         - name: SPRING_DATA_MONGODB_HOST
           value: mongodb-like
@@ -811,6 +830,8 @@ spec:
   ports:
   - port: 8064
     targetPort: 80
+  - port: 8464
+    targetPort: 443
 ---
 #REACT
 
@@ -835,7 +856,7 @@ spec:
         imagePullPolicy: Always
         image: kwetterfrits/kwetter-platform:latest
         ports:
-        - containerPort: 3000
+        - containerPort: 80
         resources:
           limits:
             memory: 500Mi
