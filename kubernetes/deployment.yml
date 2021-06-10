@@ -123,6 +123,10 @@ spec:
           value: root
         - name: MONGO_INITDB_ROOT_PASSWORD
           value: Kw3tter!
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 100m 
 ---
 apiVersion: v1
 kind: Service
@@ -163,6 +167,10 @@ spec:
           value: root
         - name: MONGO_INITDB_ROOT_PASSWORD
           value: Kw3tter!
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 100m 
 ---
 apiVersion: v1
 kind: Service
@@ -203,6 +211,10 @@ spec:
           value: root
         - name: MONGO_INITDB_ROOT_PASSWORD
           value: Kw3tter!
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 100m 
 ---
 apiVersion: v1
 kind: Service
@@ -243,6 +255,10 @@ spec:
           value: root
         - name: MONGO_INITDB_ROOT_PASSWORD
           value: Kw3tter!
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 100m 
 ---
 apiVersion: v1
 kind: Service
@@ -283,6 +299,10 @@ spec:
           value: root
         - name: MONGO_INITDB_ROOT_PASSWORD
           value: Kw3tter!
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 100m 
 ---
 apiVersion: v1
 kind: Service
@@ -329,6 +349,10 @@ spec:
           value: Kw3tter!
         - name: MYSQL_DATABASE
           value: auth-db
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 100m 
 ---
 apiVersion: v1
 kind: Service
@@ -369,6 +393,10 @@ spec:
           value: Kw3tter!
         - name: MYSQL_DATABASE
           value: user-db
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 100m 
 ---
 apiVersion: v1
 kind: Service
@@ -466,9 +494,12 @@ metadata:
 spec:
   selector: 
     app: eureka-discovery-service
-  clusterIP: None
+  type: NodePort
   ports:
   - port: 8761
+    targetPort: 8761
+    nodePort: 31111
+
 ---
 #MICROSERVICES
 
