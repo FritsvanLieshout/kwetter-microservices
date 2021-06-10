@@ -456,7 +456,8 @@ spec:
     app: api-gateway
   type: LoadBalancer
   ports:
-  - protocol: TCP
+  - name: "80"
+    protocol: TCP
     port: 80
     targetPort: 80
 ---
@@ -503,7 +504,8 @@ spec:
     app: eureka-discovery-service
   type: NodePort
   ports:
-  - port: 8761
+  - name: "8761"
+    port: 8761
     targetPort: 8761
     nodePort: 31111
 
@@ -550,9 +552,11 @@ spec:
   selector: 
     app: tweet-service
   ports:
-  - port: 8070
+  - name: "8070"
+    port: 8070
     targetPort: 80
-  - port: 8470
+  - name: "8470"
+    port: 8470
     targetPort: 443
 ---
 apiVersion: apps/v1
@@ -599,9 +603,11 @@ spec:
   selector: 
     app: user-service
   ports:
-  - port: 8069
+  - name: "8069"
+    port: 8069
     targetPort: 80
-  - port: 8469
+  - name: "8469"
+    port: 8469
     targetPort: 443
 ---
 apiVersion: apps/v1
@@ -644,9 +650,11 @@ spec:
   selector: 
     app: timeline-service
   ports:
-  - port: 8068
+  - name: "8068"
+    port: 8068
     targetPort: 80
-  - port: 8468
+  - name: "8468"
+    port: 8468
     targetPort: 443
 ---
 apiVersion: apps/v1
@@ -693,9 +701,11 @@ spec:
   selector: 
     app: auth-service
   ports:
-  - port: 8067
+  - name: "8067"
+    port: 8067
     targetPort: 80
-  - port: 8467
+  - name: "8467"
+    port: 8467
     targetPort: 443
 ---
 apiVersion: apps/v1
@@ -738,9 +748,11 @@ spec:
   selector: 
     app: follow-service
   ports:
-  - port: 8066
+  - name: "8066"
+    port: 8066
     targetPort: 80
-  - port: 8466
+  - name: "8466"
+    port: 8466
     targetPort: 443
 ---
 apiVersion: apps/v1
@@ -783,9 +795,11 @@ spec:
   selector: 
     app: trending-service
   ports:
-  - port: 8065
+  - name: "8065"
+    port: 8065
     targetPort: 80
-  - port: 8465
+  - name: "8465"
+    port: 8465
     targetPort: 443
 ---
 apiVersion: apps/v1
@@ -828,9 +842,11 @@ spec:
   selector: 
     app: like-service
   ports:
-  - port: 8064
+  - name: "8064"
+    port: 8064
     targetPort: 80
-  - port: 8464
+  - name: "8464"
+    port: 8464
     targetPort: 443
 ---
 #REACT
