@@ -83,10 +83,6 @@ spec:
         ports:
         - containerPort: 9092
         - containerPort: 9093
-        resources:
-          limits:
-            memory: 256Mi
-            cpu: 100m
 ---
 apiVersion: v1
 kind: Service
@@ -356,10 +352,6 @@ spec:
           value: Kw3tter!
         - name: MYSQL_DATABASE
           value: auth-db
-        resources:
-          limits:
-            memory: 256Mi
-            cpu: 100m 
 ---
 apiVersion: v1
 kind: Service
@@ -400,10 +392,6 @@ spec:
           value: Kw3tter!
         - name: MYSQL_DATABASE
           value: user-db
-        resources:
-          limits:
-            memory: 256Mi
-            cpu: 100m 
 ---
 apiVersion: v1
 kind: Service
@@ -412,6 +400,7 @@ metadata:
 spec:
   ports:
   - port: 3306
+    targetPort: 3306
   selector:
     app: mysql-db-user
   clusterIP: None
@@ -438,10 +427,10 @@ spec:
         imagePullPolicy: Always
         image: kwetterfrits/api-gateway:latest
         ports:
-        - containerPort: 80
+        - containerPort: 8050
         env:
-        - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-          value: http://eureka-discovery-service:8761/eureka
+        - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
+          value: "true"
         resources:
           limits:
             memory: 256Mi
@@ -456,10 +445,9 @@ spec:
     app: api-gateway
   type: LoadBalancer
   ports:
-  - name: "80"
-    protocol: TCP
-    port: 80
-    targetPort: 80
+  - protocol: TCP
+    port: 8050
+    targetPort: 8050
 ---
 #DISCOVERY-SERVICE
 
@@ -484,12 +472,8 @@ spec:
         ports:
         - containerPort: 8761
         env:
-        - name: _JAVA_OPTIONS
-          value: -Deureka.instance.preferIpAddress=false -Deureka.client.serviceUrl.defaultZone=http://eureka-discovery-service:8761/eureka
         - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
           value: "true"
-        - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-          value: http://eureka-discovery-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
@@ -504,11 +488,9 @@ spec:
     app: eureka-discovery-service
   type: NodePort
   ports:
-  - name: "8761"
-    port: 8761
+  - port: 8761
     targetPort: 8761
     nodePort: 31111
-
 ---
 #MICROSERVICES
 
@@ -537,6 +519,8 @@ spec:
         env: 
         - name: SPRING_DATA_MONGODB_HOST
           value: mongodb-tweet
+        - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
+          value: "true"
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
           value: http://eureka-discovery-service:8761/eureka
         resources:
@@ -588,6 +572,8 @@ spec:
           value: Kw3tter!
         - name: SPRING_DATASOURCE_URL
           value: jdbc:mysql://mysql-db-user:3306/user_db?createDatabaseIfNotExist=true
+        - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
+          value: "true"
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
           value: http://eureka-discovery-service:8761/eureka
         resources:
@@ -635,6 +621,8 @@ spec:
         env: 
         - name: SPRING_DATA_MONGODB_HOST
           value: mongodb-timeline
+        - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
+          value: "true"
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
           value: http://eureka-discovery-service:8761/eureka
         resources:
@@ -686,6 +674,8 @@ spec:
           value: Kw3tter!
         - name: SPRING_DATASOURCE_URL
           value: jdbc:mysql://mysql-db-auth:3306/auth_user?createDatabaseIfNotExist=true
+        - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
+          value: "true"
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
           value: http://eureka-discovery-service:8761/eureka
         resources:
@@ -733,6 +723,8 @@ spec:
         env: 
         - name: SPRING_DATA_MONGODB_HOST
           value: mongodb-follow
+        - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
+          value: "true"
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
           value: http://eureka-discovery-service:8761/eureka
         resources:
@@ -780,6 +772,8 @@ spec:
         env: 
         - name: SPRING_DATA_MONGODB_HOST
           value: mongodb-trending
+        - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
+          value: "true"
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
           value: http://eureka-discovery-service:8761/eureka
         resources:
@@ -827,6 +821,8 @@ spec:
         env: 
         - name: SPRING_DATA_MONGODB_HOST
           value: mongodb-like
+        - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
+          value: "true"
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
           value: http://eureka-discovery-service:8761/eureka
         resources:

@@ -18,10 +18,10 @@ spec:
         imagePullPolicy: Always
         image: kwetterfrits/api-gateway:latest
         ports:
-        - containerPort: 80
+        - containerPort: 8050
         env:
-        - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-          value: http://eureka-discovery-service:8761/eureka
+        - name: JAVA_OPTIONS
+          value: -Dspring.profiles.active=kubernetes
         resources:
           limits:
             memory: 256Mi
@@ -38,7 +38,7 @@ spec:
   ports:
   - protocol: TCP
     port: 8050
-    targetPort: 80
+    targetPort: 8050
 ---
 #DISCOVERY-SERVICE
 
@@ -63,12 +63,8 @@ spec:
         ports:
         - containerPort: 8761
         env:
-        - name: _JAVA_OPTIONS
-          value: -Deureka.instance.preferIpAddress=false -Deureka.client.serviceUrl.defaultZone=http://eureka-discovery-service:8761/eureka
         - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
           value: "true"
-        - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-          value: http://eureka-discovery-service:8761/eureka
         resources:
           limits:
             memory: 256Mi
