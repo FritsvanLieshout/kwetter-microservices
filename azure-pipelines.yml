@@ -15,8 +15,8 @@ steps:
   inputs:
     connectionType: 'Azure Resource Manager'
     azureSubscriptionEndpoint: 'Azure for Students(5c35364a-836c-420f-8218-3ee41a64dfab)'
-    azureResourceGroup: 'S6_kwetter-cluster'
-    kubernetesCluster: 'kwetter-cluster'
+    azureResourceGroup: 'S6_kwetter-cluster-rg'
+    kubernetesCluster: 'kwetter-cluster-v2'
     namespace: 'default'
     command: 'apply'
     useConfigurationFile: true
