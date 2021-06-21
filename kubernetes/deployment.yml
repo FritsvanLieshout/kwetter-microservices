@@ -850,6 +850,56 @@ spec:
     port: 8464
     targetPort: 443
 ---
+
+#Websocket
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ws-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ws-service
+  template:
+    metadata:
+      labels:
+        app: ws-service
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: ws-service
+        imagePullPolicy: Always
+        image: kwetterfrits/ws-service:latest
+        ports: 
+        - containerPort: 80
+        - containerPort: 443 
+        env: 
+        - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
+          value: "true"
+        - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+          value: http://eureka-discovery-service:8761/eureka
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 100m
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: ws-service
+spec:
+  selector: 
+    app: ws-service
+  type: LoadBalancer
+  ports:
+  - name: "8043"
+    port: 8043
+    targetPort: 80
+  - name: "8443"
+    port: 8443
+    targetPort: 443
+---
 #REACT
 
 apiVersion: apps/v1
