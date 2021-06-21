@@ -1,0 +1,251 @@
+version: '3.3'
+services:
+  eureka-discovery-service:
+    image: kwetterfrits/eureka-discovery-service:latest
+    container_name: eureka-discovery-service
+    ports: 
+      - "8761:8761"
+    environment:
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+
+  mysql: 
+    image: mysql:latest
+    container_name: kwetter_account_db
+    environment:
+      MYSQL_ROOT_PASSWORD: Kw3tter!
+      MYSQL_DATABASE: account_db
+    ports:
+      - "3306:3306"
+    restart: always
+
+  mysql_db_auth:
+    image: mysql:latest
+    container_name: mysql_db_auth
+    environment:
+      MYSQL_ROOT_PASSWORD: Kw3tter!
+      MYSQL_DATABASE: auth_user
+    ports:
+      - "3307:3307"
+    restart: always
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: my-php-myadmin
+    ports:
+      - "8060:80"
+    restart: always
+        
+    depends_on:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: Kw3tter!
+
+  phpmyadmin-auth:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: my-php-myadmin-auth
+    ports:
+      - "8059:80"
+    restart: always
+            
+    depends_on:
+      - mysql_db_auth
+    environment:
+      PMA_HOST: mysql_db_auth
+      PMA_PORT: 3308
+      PMA_ARBITRARY: 1
+      MYSQL_ROOT_PASSWORD: Kw3tter!
+
+  mongodb_timeline:
+    image: mongo:latest
+    container_name: mongodb_timeline
+    environment: 
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: Kw3tter!
+    ports:
+      - "27018:27017"
+  
+  mongodb_follow:
+    image: mongo:latest
+    container_name: mongodb_follow
+    environment: 
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: Kw3tter!
+    ports:
+      - "27019:27017"
+
+  mongodb_tweet:
+    image: mongo:latest
+    container_name: mongodb_tweet
+    environment: 
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: Kw3tter!
+    ports:
+      - "27020:27017"
+  
+  mongodb_trending:
+    image: mongo:latest
+    container_name: mongodb_trending
+    environment: 
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: Kw3tter!
+    ports:
+      - "27021:27017"
+  
+  mongodb_like:
+    image: mongo:latest
+    container_name: mongodb_like
+    environment: 
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: Kw3tter!
+    ports:
+      - "27022:27017"
+
+  like-service:
+    image: kwetterfrits/like-service:latest
+    hostname: like-service
+    restart: always
+    ports:
+      - "8064:8064"
+    
+    depends_on: 
+      - mongodb_like
+      - eureka-discovery-service
+    environment:
+      SPRING_DATA_MONGODB_HOST: mongodb_like
+
+  trending-service: 
+    image: kwetterfrits/trending-service:latest
+    hostname: trending-service
+    restart: always
+    ports:
+      - "8065:8065"
+        
+    depends_on: 
+      - mongodb_trending
+      - eureka-discovery-service
+    environment:
+      SPRING_DATA_MONGODB_HOST: mongodb_trending
+
+  follow-service: 
+    image: kwetterfrits/follow-service:latest
+    hostname: follow-service
+    restart: always
+    ports:
+      - "8066:8066"
+    
+    depends_on: 
+      - mongodb_follow
+      - eureka-discovery-service
+    environment:
+      SPRING_DATA_MONGODB_HOST: mongodb_follow
+
+  auth-service: 
+    image: kwetterfrits/auth-service:latest
+    hostname: auth-service
+    restart: always
+    ports:
+      - "8067:8067"
+
+    depends_on: 
+      - mysql_db_auth
+      - eureka-discovery-service
+    environment:
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Kw3tter!
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql_db_auth:3306/auth_user?createDatabaseIfNotExist=true
+
+  timeline-service:
+    image: kwetterfrits/timeline-service:latest
+    hostname: timeline-service
+    restart: always
+    ports: 
+      - "8068:8068"
+
+    depends_on:
+      - mongodb_timeline
+      - eureka-discovery-service
+      - kafka
+
+    environment: 
+      SPRING_DATA_MONGODB_HOST: mongodb_timeline
+
+  user-service:
+    image: kwetterfrits/user-service:latest
+    hostname: user-service
+    restart: always
+    ports:
+      - "8069:8069"
+
+    depends_on: 
+      - mysql
+      - eureka-discovery-service
+    environment:
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Kw3tter!
+      SPRING_DATASOURCE_URL: jdbc:mysql://kwetter_account_db:3306/account_db?createDatabaseIfNotExist=true
+
+  tweet-service:
+    image: kwetterfrits/tweet-service:latest
+    hostname: tweet-service
+    restart: always
+    ports:
+      - "8070:8070"
+
+    depends_on: 
+      - mongodb_tweet
+      - eureka-discovery-service
+      - kafka
+
+    environment: 
+      SPRING_DATA_MONGODB_HOST: mongodb_tweet
+  
+  api-gateway:
+    image: kwetterfrits/api-gateway:latest
+    hostname: api-gateway
+    restart: always
+    ports:
+      - "8050:8050"
+    depends_on: 
+      - tweet-service
+      - user-service
+      - timeline-service
+      - auth-service
+      - eureka-discovery-service
+      - like-service
+      - trending-service
+      - follow-service
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    restart: "no"
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka:9092"
+    depends_on:
+      - "kafka"
+  zookeeper:
+    image: confluentinc/cp-zookeeper:5.3.1
+    container_name: zookeeper
+    hostname: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_SYNC_LIMIT: 2
+    
+  kafka:
+    image: confluentinc/cp-kafka:5.3.1
+    container_name: kafka
+    hostname: kafka
+    environment:
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://:9092,PLAINTEXT_HOST://0.0.0.0:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_BROKER_ID: 2
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - 9092:9092
+      - 29092:29092

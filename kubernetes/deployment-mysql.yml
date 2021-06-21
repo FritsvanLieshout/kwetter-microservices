@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-db-user
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-db-user
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels: 
+        app: mysql-db-user
+    spec:
+      containers:
+      - name: mysql-db-user
+        imagePullPolicy: Always
+        image: mysql:latest
+        ports:
+        - containerPort: 3306
+          name: mysql-user
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: Kw3tter!
+        - name: MYSQL_DATABASE
+          value: user-db
+        # resources:
+        #   limits:
+        #     memory: 256Mi
+        #     cpu: 100m 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-db-user
+spec:
+  ports:
+  - port: 3306
+    targetPort: 3306
+  selector:
+    app: mysql-db-user
+  clusterIP: None

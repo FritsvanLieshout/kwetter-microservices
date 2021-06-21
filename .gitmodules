@@ -1,7 +1,39 @@
-[submodule "account-service"]
-    path = services/account-service
-    url = https://github.com/FritsvanLieshout/account-service.git
+[submodule "user-service"]
+    path = services/user-service
+    url = https://github.com/FritsvanLieshout/user-service.git
 
 [submodule "tweet-service"]
     path = services/tweet-service
     url = https://github.com/FritsvanLieshout/tweet-service.git
+
+[submodule "api-gateway"]
+    path = services/api-gateway
+    url = https://github.com/FritsvanLieshout/api-gateway.git
+
+[submodule "eureka-discovery-service"]
+    path = services/eureka-discovery-service
+    url = https://github.com/FritsvanLieshout/eureka-discovery-service.git
+
+[submodule "timeline-service"]
+    path = services/timeline-service
+    url = https://github.com/FritsvanLieshout/timeline-service.git
+
+[submodule "auth-service"]
+    path = services/auth-service
+    url = https://github.com/FritsvanLieshout/auth-service.git
+
+[submodule "follow-service"]
+    path = services/follow-service
+    url = https://github.com/FritsvanLieshout/follow-service.git
+
+[submodule "trending-service"]
+    path = services/trending-service
+    url = https://github.com/FritsvanLieshout/trending-service.git
+
+[submodule "ws-service"]
+    path = services/ws-service
+    url = https://github.com/FritsvanLieshout/ws-service.git
+
+[submodule "like-service"]
+    path = services/like-service
+    url = https://github.com/FritsvanLieshout/like-service.git    

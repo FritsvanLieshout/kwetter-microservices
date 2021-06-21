@@ -1,0 +1,75 @@
+version: '3.3'
+services:
+  mysql: 
+    image: mysql:latest
+    container_name: staging_account_db
+    environment:
+      MYSQL_ROOT_PASSWORD: Kw3tter!
+      MYSQL_DATABASE: account_db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: Kw3tter!Pwd
+    ports:
+      - "3306:3306"
+    restart: always
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: staging_phpmyadmin
+    ports:
+      - "8060:80"
+    restart: always
+        
+    depends_on:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: Kw3tter!
+
+  staging_mongodb_tweet:
+    image: mongo:latest
+    container_name: staging_mongodb_tweet
+    environment: 
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: Kw3tter!
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - staging_mongodb_tweet_container:/data/db
+    ports:
+      - "27017:27017"
+
+  message-broker:
+    image: rabbitmq:3.8-management
+    hostname: message-broker
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  account-service:
+    image: account-service:0.0.1-SNAPSHOT
+    hostname: account-service
+    restart: always
+    ports:
+      - "8039:8039"
+
+    depends_on: 
+      - mysql
+    environment:
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Kw3tter!
+      SPRING_DATASOURCE_URL: jdbc:mysql://staging_account_db:3306/account_db?createDatabaseIfNotExist=true
+
+  tweet-service:
+    image: tweet-service:0.0.1-SNAPSHOT 
+    hostname: tweet-service
+    restart: always
+    ports:
+      - "8040:8040"
+
+    depends_on: 
+      - staging_mongodb_tweet
+    environment: 
+      SPRING_DATA_MONGODB_HOST: staging_mongodb_tweet
+
+volumes:
+  staging_mongodb_tweet_container:  
