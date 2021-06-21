@@ -16,10 +16,8 @@ Each folder in this project I tell you what it means.
     - The other YML files, are test YML's, for testing some services separately.
 3. production
     - Docker compose files, with images from Docker Hub.
-4. repositories
+4. services
     - All code of this project can be found here. 
-    - Every service has an seperate folder of his own.
-5. services
     - All repositories from Github.
     - Referred via gitmodules to other Github repositories.
 
@@ -73,7 +71,7 @@ Step 1: Install NodeJS
 https://nodejs.org/en/
 ```
 
-Step 2: Go to the repositories folder, here can you find all the code of this project.
+Step 2: Go to the 'services' folder, here can you find all the code of this project.
 Step 3: Open the folder 'kwetter-app' in an editor of your choice.
 
 Step 4: Install the packages
