@@ -327,6 +327,50 @@ spec:
     port: 27022
     targetPort: 27017
 ---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb-moderation
+spec:
+  serviceName: mongodb-moderation
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb-moderation
+  template:
+    metadata:
+      labels:
+        app: mongodb-moderation
+        selector: mongodb-moderation
+    spec:
+      containers:
+      - name: mongodb-like
+        image: mongo:latest
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: root
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: Kw3tter!
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 100m 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-moderation
+  labels:
+    app: mongodb-moderation
+spec:
+  clusterIP: None
+  selector:
+    app: mongodb-moderation
+  ports:
+  - name: "27023"
+    port: 27023
+    targetPort: 27017
+---
 #MYSQL DATABASES
 
 apiVersion: apps/v1
@@ -848,6 +892,55 @@ spec:
     targetPort: 80
   - name: "8464"
     port: 8464
+    targetPort: 443
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moderation-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: moderation-service
+  template:
+    metadata:
+      labels:
+        app: moderation-service
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: moderation-service
+        imagePullPolicy: Always
+        image: kwetterfrits/moderation-service:latest
+        ports: 
+        - containerPort: 80
+        - containerPort: 443 
+        env: 
+        - name: SPRING_DATA_MONGODB_HOST
+          value: mongodb-moderation
+        - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
+          value: "true"
+        - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+          value: http://eureka-discovery-service:8761/eureka
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 100m
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: moderation-service
+spec:
+  selector: 
+    app: moderation-service
+  ports:
+  - name: "8063"
+    port: 8063
+    targetPort: 80
+  - name: "8463"
+    port: 8463
     targetPort: 443
 ---
 
