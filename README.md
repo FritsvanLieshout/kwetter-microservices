@@ -6,7 +6,7 @@ All microservices are developed with Spring framework, the front-end is develope
 
 ### Folders
 
-Each folder in this project I tell you what it means.
+I tell you what each folder means.
 
 1. development
     - In the first stage of this project, I have used this folder a lot of times to run all services in Docker Compose.
