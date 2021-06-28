@@ -37,3 +37,7 @@
 [submodule "like-service"]
     path = services/like-service
     url = https://github.com/FritsvanLieshout/like-service.git    
+
+[submodule "moderation-service"]
+    path = services/moderation-service
+    url = https://github.com/FritsvanLieshout/moderation-service.git
